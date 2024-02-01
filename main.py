@@ -1,25 +1,55 @@
 import flet as ft
 
 def main(page: ft.Page):
+    page.bgcolor= ft.colors.GREY_100
     page.appbar = ft.AppBar(
-        title=ft.Text('Flet Exemple')
+        title=ft.Text('Flet comparer des nombres')
     )
-    page.vertical_alignment = ft.MainAxisAlignment.CENTER
+    page.vertical_alignment = "center"
+    page.horizontal_alignment = "center"
     
-    txt_number = ft.TextField(value="0", text_align="right", width=100)
+    first_number = ft.TextField(
+        label="Premier nombre",
+        width=200,
+        keyboard_type = "number"
+    )
+    second_number = ft.TextField(
+        label="Deuxième nombre",
+        width=200,
+        keyboard_type = ft.KeyboardType.NUMBER
+    )
     
-    def minus_click(e):
-        txt_number.value = str(int(txt_number.value) - 1)
+    result = ft.Text()    
+    
+    def comparer_nombre():
+        number_one = int(first_number.value)
+        number_two = int(second_number.value)
+        
+        if number_one > number_two:
+            result.value = str(number_one) + " est sup à " + str(number_two)
+        if number_one < number_two:
+            result.value = str(number_one) + " est inférieur à " + str(number_two)
+        if number_one == number_two:
+            result.value = str(number_one) + " est égal à " + str(number_two)
         page.update()
     
-    def plus_click(e):
-        txt_number.value = str(int(txt_number.value) + 1)
-        page.update()
+    def verifier_nombre(e):
+        if (first_number.value.isdecimal() == False) or (second_number.value.isdecimal() == False):
+            result.value = "SVP, Veuillez entrer des entiers."
+            page.update()
+        else:
+            comparer_nombre()
     
-    page.add(ft.Row([
-        ft.IconButton(ft.icons.REMOVE, on_click=minus_click),
-        txt_number,
-        ft.IconButton(ft.icons.ADD, on_click=plus_click)
-    ], alignment=ft.MainAxisAlignment.CENTER))
+    btn = ft.ElevatedButton(text="Comparer", on_click=verifier_nombre)
+    
+    page.add(
+        ft.Column([
+            first_number,
+            second_number,
+            result,
+            btn
+        ], 
+        horizontal_alignment="center"
+    ))
 
 ft.app(target=main)
